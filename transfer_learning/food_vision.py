@@ -151,8 +151,11 @@ def predict(image_path: Path, class_names: List[str]) -> None:
     
     # Predict
     with torch.inference_mode():
-        model_pred = model(img_tensor).argmax(dim=1)
-        print(f'Predicted class: {class_names[model_pred.item()]}')
+        pred_probs = torch.softmax(model(img_tensor), dim=1)
+        model_pred = pred_probs.argmax(dim=1)
+        pred_class = class_names[model_pred.item()]
+        probability = pred_probs[0, model_pred.item()].item()
+        print(f'Predicted class: {pred_class} with probability: {probability:.2f}')
         print('_______________________________\n')
 
 
