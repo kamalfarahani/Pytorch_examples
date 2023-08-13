@@ -116,13 +116,34 @@ def train_model(epochs: int = 15) -> None:
 
 
 def predict(image_path: Path, class_names: List[str]) -> None:
+    """
+    Predicts the class of an image.
+    Args:
+        image_path (Path): The path to the image.
+        class_names (List[str]): The list of class names.
+    """
+    if not image_path.exists():
+        print('Image does not exist!')
+        return
+    
+    # Load the image
     img = Image.open(image_path)
     transform = EfficientNet_B0_Weights.DEFAULT.transforms()
     img_tensor = transform(img).to(device).unsqueeze(0)
 
+
+    # Check if the model exists
+    if not (MODEL_PATH / MODEL_NAME).exists():
+        print('Model does not exist!')
+        print('Training the model...')
+        train_model()
+    
+    # Load the model
     model = create_model(len(class_names))
     model.load_state_dict(torch.load(MODEL_PATH / MODEL_NAME))
     model.eval()
+    
+    # Predict
     with torch.inference_mode():
         model_pred = model(img_tensor).argmax(dim=1)
         print(f'Predicted class: {class_names[model_pred.item()]}')
