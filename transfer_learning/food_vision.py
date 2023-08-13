@@ -66,6 +66,12 @@ def create_model(class_size: int) -> nn.Module:
 
 
 def train_model(epochs: int = 15) -> None:
+    """
+    Trains an efficientnet_b0 model for food vision classification.
+
+    Args:
+        epochs (int, optional): The number of epochs to train for. Defaults to 15.
+    """    
     # Create transforms
     transform = EfficientNet_B0_Weights.DEFAULT.transforms()
     
@@ -150,7 +156,7 @@ def predict(image_path: Path, class_names: List[str]) -> None:
         print('_______________________________\n')
 
 
-def clear_screen():
+def clear_screen() -> None:
     """
     Clears the screen
     """
